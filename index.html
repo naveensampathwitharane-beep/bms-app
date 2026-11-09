@@ -1971,6 +1971,9 @@
             const urlParams = new URLSearchParams(window.location.search);
             const docId = urlParams.get('docId');
             if (docId) {
+                // Hide main app technician login when entering via customer share link
+                const mainLogin = document.getElementById('loginModal');
+                if (mainLogin) mainLogin.classList.add('hidden');
                 launchCustomerPortalForDoc(docId);
             }
         }
@@ -2081,7 +2084,8 @@
             log.customerSignOff = {
                 name: wName,
                 company: wComp,
-                date: wDate
+                date: wDate,
+                submittedAt: getCurrentFormattedDateTime()
             };
 
             log.snapshotData.equipment.forEach(eq => {
@@ -2094,7 +2098,18 @@
             localStorage.setItem('nexens_saved_logs', JSON.stringify(savedInspectionLogs));
             syncStateToCloud();
             renderLogsTable();
-            showToast('Customer feedback submitted and saved live to cloud database!', 'success');
+
+            // Auto clear form inputs
+            document.getElementById('customerFeedbackComment').value = '';
+            document.getElementById('custWitnessName').value = '';
+            document.getElementById('custWitnessCompany').value = '';
+            
+            showToast('Customer feedback submitted and saved! Exiting sheet...', 'success');
+
+            // Auto exit customer portal
+            setTimeout(() => {
+                closeCustomerPortal();
+            }, 1200);
         }
 
         function closeCustomerPortal() {
@@ -2283,6 +2298,7 @@
         function buildPrintableHTML(siteData, docNo) {
             const mainTitle = document.getElementById('reportMainTitleInput')?.value || 'OPERATIONAL LOG SHEET';
             const displayDocNo = docNo || generateDocumentNumber(siteData);
+            const savedLog = savedInspectionLogs.find(l => l.id === displayDocNo);
 
             let html = `
                 <div style="width: 100%; text-align: center; margin-bottom: 8px; font-weight: 800; font-size: 13px; color: #0F172A; font-family: monospace; text-transform: uppercase;">
@@ -2361,6 +2377,28 @@
                     </div>
                 `;
             });
+
+            // Official Customer Remarks & Approval Section in PDF
+            if (savedLog && (savedLog.customerFeedback || savedLog.customerSignOff?.name)) {
+                html += `
+                    <div style="border: 2px solid #C5A059; border-radius: 8px; padding: 10px; margin-top: 15px; background-color: #fefce8; page-break-inside: avoid; font-family: 'Inter', sans-serif;">
+                        <div style="font-weight: 800; font-size: 10px; text-transform: uppercase; color: #1B2A4A; border-bottom: 1px solid #eab308; padding-bottom: 4px; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                            <span>📝 OFFICIAL CUSTOMER REMARKS & APPROVAL</span>
+                            <span style="font-size: 8px; color: #854d0e; font-family: monospace;">Submitted: ${savedLog.customerSignOff?.submittedAt || savedLog.timestamp}</span>
+                        </div>
+                        <div style="font-size: 9px; color: #1e293b; font-style: italic; margin-bottom: 8px; background: #fff; padding: 6px; border-radius: 4px; border: 1px solid #fef08a;">
+                            "${savedLog.customerFeedback || 'Verified and approved with no additional remarks.'}"
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8px; color: #1B2A4A;">
+                            <tr>
+                                <td style="width: 33%;">Approved By: <strong>${savedLog.customerSignOff?.name || 'Customer'}</strong></td>
+                                <td style="width: 33%;">Organization: <strong>${savedLog.customerSignOff?.company || '-'}</strong></td>
+                                <td style="width: 34%;">Sign-Off Date: <strong>${savedLog.customerSignOff?.date || '-'}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
 
             return html;
         }
