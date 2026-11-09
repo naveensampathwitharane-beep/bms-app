@@ -52,10 +52,10 @@
         <div id="toastMessage" class="text-sm font-medium">Notification</div>
     </div>
 
-    <!-- PRINTABLE CONTAINER FOR PDF/PRINT -->
+    <!-- PRINTABLE CONTAINER -->
     <div id="printableDocumentArea" class="hidden print-only bg-white text-slate-900 p-4 space-y-4"></div>
 
-    <!-- CUSTOMER POST-SUBMISSION PDF PROMPT MODAL -->
+    <!-- CUSTOMER POST-SUBMISSION PDF PROMPT MODAL (YES / NO) -->
     <div id="customerPdfPromptModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 hidden no-print">
         <div class="bg-white dark:bg-nexens-cardDark p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-nexens-borderDark max-w-md w-full shadow-2xl text-center space-y-5">
             <div class="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-2xl">
@@ -63,27 +63,27 @@
             </div>
             <div>
                 <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Feedback Submitted Successfully!</h3>
-                <p class="text-xs text-slate-400 mt-1">Do you want to download / print the updated PDF Report before closing?</p>
+                <p class="text-xs text-slate-400 mt-1">Do you want to download or print the PDF report?</p>
             </div>
             <div class="flex items-center justify-center space-x-3 pt-2">
-                <button onclick="handleCustomerPdfDownloadChoice(true)" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
-                    <i class="fas fa-print"></i> YES, Download PDF
+                <button onclick="handleCustomerPdfChoice(true)" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
+                    <i class="fas fa-print"></i> YES
                 </button>
-                <button onclick="handleCustomerPdfDownloadChoice(false)" class="flex-1 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
-                    <i class="fas fa-times"></i> NO, Exit
+                <button onclick="handleCustomerPdfChoice(false)" class="flex-1 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fas fa-times"></i> NO
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- LINK EXPIRED / ACCESS DENIED SCREEN -->
+    <!-- LINK EXPIRED / ALREADY USED MODAL -->
     <div id="linkExpiredModal" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 p-8 rounded-2xl border border-rose-500/30 max-w-md w-full shadow-2xl text-center space-y-4">
             <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-full flex items-center justify-center mx-auto text-2xl">
                 <i class="fas fa-lock"></i>
             </div>
             <h2 class="text-base font-extrabold text-white">Access Denied / Link Expired</h2>
-            <p class="text-xs text-slate-400">This one-time inspection feedback link has already been used and submitted. Further access is restricted.</p>
+            <p class="text-xs text-slate-400">This feedback link has already been opened and submitted once. It cannot be accessed again.</p>
         </div>
     </div>
 
@@ -114,7 +114,7 @@
     </div>
 
     <!-- CUSTOMER FEEDBACK PORTAL MODAL -->
-    <div id="customerPortalModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden no-print">
+    <div id="customerPortalModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden no-print overflow-y-auto">
         <div class="bg-white dark:bg-nexens-cardDark p-5 sm:p-8 rounded-2xl border border-slate-200 dark:border-nexens-borderDark max-w-4xl w-full shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
                 <div>
@@ -129,9 +129,9 @@
                 </div>
             </div>
 
-            <!-- Lock Notice Banner -->
+            <!-- Mandatory Fields Notice -->
             <div id="custLockNotice" class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-2">
-                <i class="fas fa-info-circle text-base"></i> Please fill in your Name, Position, and Company first to unlock the comment box.
+                <i class="fas fa-info-circle text-base"></i> Please fill in your Full Name, Position/Designation, and Company Name completely to unlock the comment box.
             </div>
 
             <form onsubmit="handleCustomerSubmitFeedback(event)" class="space-y-6">
@@ -154,10 +154,9 @@
                 <!-- Customer Remarks / Feedback Textarea -->
                 <div>
                     <label class="text-xs font-bold uppercase text-slate-400">Customer Remarks & Feedback</label>
-                    <textarea id="custRemarksInput" disabled rows="4" placeholder="First fill your Name, Position, and Company above to type your remarks..." class="mt-1 w-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-nexens-gold opacity-50 cursor-not-allowed"></textarea>
+                    <textarea id="custRemarksInput" disabled rows="4" placeholder="First fill your Name, Position, and Company above to type your remarks..." class="mt-1 w-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:outline-none opacity-50 cursor-not-allowed"></textarea>
                 </div>
 
-                <!-- Live Equipment Summary Table -->
                 <div class="space-y-2">
                     <h4 class="text-xs font-bold uppercase text-slate-400">Inspected Items Summary</h4>
                     <div id="custEquipmentSummaryContainer" class="max-h-56 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-3 bg-slate-50 dark:bg-slate-900/40"></div>
@@ -172,7 +171,7 @@
         </div>
     </div>
 
-    <!-- Header & Navigation -->
+    <!-- Header & Navigation (Preview and Print buttons removed) -->
     <header class="bg-white dark:bg-nexens-navy border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 w-full no-print shadow-md">
         <div class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row justify-between items-center py-3 sm:py-0 sm:h-16 gap-3">
@@ -183,34 +182,35 @@
                 <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/95 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner w-full sm:w-auto">
                     <i class="fas fa-building text-nexens-gold text-xs shrink-0"></i>
                     <span class="text-xs font-bold text-slate-400 shrink-0">Active Site:</span>
-                    <select id="activeSiteSelect" onchange="changeActiveSite(this.value)" class="bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-nexens-gold cursor-pointer w-full sm:w-48 max-h-48 overflow-y-auto"></select>
+                    <select id="activeSiteSelect" onchange="changeActiveSite(this.value)" class="bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-nexens-gold cursor-pointer w-full sm:w-48 max-h-48 overflow-y-auto">
+                    </select>
                 </div>
 
-                <!-- Nav Tabs -->
                 <div class="hidden md:flex items-center space-x-1.5 bg-slate-200/80 dark:bg-slate-900/90 p-1.5 rounded-xl border border-slate-300/60 dark:border-slate-700/60 shadow-inner">
-                    <button onclick="showAppTab('inspection')" id="tabNavInspection" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-nexens-navy text-white shadow-md">
+                    <button onclick="showAppTab('inspection')" id="tabNavInspection" class="nav-btn-inspection px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-clipboard-check text-emerald-500"></i> Inspection
                     </button>
-                    <button onclick="showAppTab('manager')" id="tabNavManager" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('manager')" id="tabNavManager" class="nav-btn-manager px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-folder-plus text-nexens-gold"></i> Assets & Sites
                     </button>
-                    <button onclick="showAppTab('history')" id="tabNavHistory" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('history')" id="tabNavHistory" class="nav-btn-history px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-history text-sky-500"></i> Logs
                     </button>
-                    <button onclick="showAppTab('admin')" id="tabNavAdmin" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('admin')" id="tabNavAdmin" class="nav-btn-admin px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-user-shield text-rose-500"></i> Admin Panel
                     </button>
                 </div>
 
-                <!-- User Controls -->
                 <div class="flex items-center space-x-2 self-end sm:self-center">
                     <div id="currentUserBadge" class="hidden sm:flex items-center space-x-2 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs border border-slate-200 dark:border-slate-700">
                         <i class="fas fa-user-circle text-nexens-gold"></i>
                         <span id="currentUserName" class="font-bold text-slate-700 dark:text-slate-200">Admin</span>
                     </div>
+
                     <button onclick="logout()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-500 transition" title="Logout">
                         <i class="fas fa-right-from-bracket"></i>
                     </button>
+
                     <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="Toggle Theme">
                         <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
@@ -219,7 +219,7 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Application View -->
     <main class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
 
         <!-- TAB 1: INSPECTION -->
@@ -269,9 +269,6 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
                 <div class="flex items-center space-x-2 overflow-x-auto pb-1 w-full sm:w-auto" id="categoryFilterContainer"></div>
                 <div class="flex items-center space-x-2 shrink-0">
-                    <button onclick="addCustomCategory()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-nexens-gold font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700">
-                        <i class="fas fa-plus-circle"></i> Add Category
-                    </button>
                     <button onclick="saveChecklistLog()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
                         <i class="fas fa-save"></i> Save Log
                     </button>
@@ -300,25 +297,6 @@
                         <button type="submit" class="w-full py-2 bg-nexens-navy text-white font-bold text-xs rounded-xl">Create New Site</button>
                     </form>
                 </div>
-
-                <div class="lg:col-span-2 bg-white dark:bg-nexens-cardDark p-6 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-4">
-                    <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fas fa-microchip text-sky-500"></i> Add Equipment to Active Site
-                    </h3>
-                    <form onsubmit="handleAddEquipment(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold uppercase text-slate-400">Equipment Name</label>
-                            <input type="text" id="newEqCode" required placeholder="e.g. AHU-01" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold uppercase text-slate-400">Category</label>
-                            <select id="newEqCategory" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <button type="submit" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl">Add Equipment Card</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </section>
 
@@ -343,7 +321,7 @@
                                 <th class="p-3">Date & Time</th>
                                 <th class="p-3">Site</th>
                                 <th class="p-3">Health Score</th>
-                                <th class="p-3">Customer Link & Credentials</th>
+                                <th class="p-3">Customer Link Status</th>
                                 <th class="p-3 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -359,11 +337,9 @@
                 <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                     <i class="fas fa-database text-emerald-500"></i> Data Backup & System Management
                 </h3>
-                <div class="flex gap-3">
-                    <button onclick="exportDataBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">
-                        <i class="fas fa-download"></i> Download Backup (.json)
-                    </button>
-                </div>
+                <button onclick="exportDataBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">
+                    <i class="fas fa-download"></i> Download Backup (.json)
+                </button>
             </div>
         </section>
 
@@ -399,20 +375,15 @@
             { id: '1', fullName: 'Naveen Sampath', username: 'admin', password: 'admin123', role: 'ADMIN' }
         ];
 
-        let customCategories = JSON.parse(localStorage.getItem('nexens_categories')) || [
-            { id: 'all', name: 'All Equipment' }, { id: 'chiller', name: 'Chillers' }, { id: 'ahu', name: 'AHU / FCU' }
-        ];
-
         let savedInspectionLogs = JSON.parse(localStorage.getItem('nexens_saved_logs')) || [];
         let activeSiteId = localStorage.getItem('nexens_active_site_id') || 'site-sheraton';
-        let currentFilter = 'all';
         let currentUser = null;
         let activeCustomerLogId = null;
 
         async function syncStateToCloud() {
             try {
                 await db.collection('bms_data').doc('app_state').set({
-                    sites: sites, savedLogs: savedInspectionLogs, categories: customCategories, activeSiteId: activeSiteId, lastUpdated: new Date().toISOString()
+                    sites: sites, savedLogs: savedInspectionLogs, activeSiteId: activeSiteId, lastUpdated: new Date().toISOString()
                 });
             } catch (e) { console.error("Sync error", e); }
         }
@@ -423,8 +394,7 @@
                     const data = doc.data();
                     if (data.sites) sites = data.sites;
                     if (data.savedLogs) savedInspectionLogs = data.savedLogs;
-                    if (data.categories) customCategories = data.categories;
-                    renderSiteOptions(); renderCategoryButtons(); renderEquipment(); renderLogsTable(); calculateMetrics();
+                    renderEquipment(); renderLogsTable(); calculateMetrics();
                 }
             });
         }
@@ -458,37 +428,6 @@
             localStorage.setItem('nexens_sites', JSON.stringify(sites));
             localStorage.setItem('nexens_active_site_id', activeSiteId);
             calculateMetrics(); syncStateToCloud();
-        }
-
-        function renderSiteOptions() {
-            const sel = document.getElementById('activeSiteSelect');
-            if (!sel) return;
-            sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id === activeSiteId ? 'selected' : ''}>${s.name} (${s.projectNo || '01'})</option>`).join('');
-        }
-
-        function changeActiveSite(id) { activeSiteId = id; saveSitesToStorage(); renderEquipment(); }
-
-        function renderCategoryButtons() {
-            const c = document.getElementById('categoryFilterContainer');
-            if (!c) return;
-            c.innerHTML = customCategories.map(cat => `
-                <button onclick="filterCategory('${cat.id}')" class="px-3 py-1 rounded-lg text-xs font-bold ${currentFilter === cat.id ? 'bg-nexens-navy text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}">
-                    ${cat.name}
-                </button>
-            `).join('');
-            const sel = document.getElementById('newEqCategory');
-            if (sel) sel.innerHTML = customCategories.filter(x => x.id !== 'all').map(x => `<option value="${x.id}">${x.name}</option>`).join('');
-        }
-
-        function filterCategory(id) { currentFilter = id; renderCategoryButtons(); renderEquipment(); }
-
-        function addCustomCategory() {
-            const name = prompt("Enter new category name:");
-            if (!name || !name.trim()) return;
-            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
-            customCategories.push({ id, name: name.trim() });
-            localStorage.setItem('nexens_categories', JSON.stringify(customCategories));
-            renderCategoryButtons(); syncStateToCloud();
         }
 
         function handleLogin(e) {
@@ -526,6 +465,7 @@
 
         function logout() { currentUser = null; document.getElementById('loginModal').classList.remove('hidden'); }
 
+        // --- MANDATORY VALIDATION FOR CUSTOMER FORM ---
         function validateCustomerInputForm() {
             const name = document.getElementById('custNameInput').value.trim();
             const pos = document.getElementById('custPositionInput').value.trim();
@@ -594,19 +534,19 @@
             log.customerCompany = document.getElementById('custCompanyInput').value.trim();
             log.customerRemarks = document.getElementById('custRemarksInput').value.trim();
             log.customerSubmitTime = new Date().toLocaleString();
-            log.isSubmitted = true;
+            log.isSubmitted = true; // One-time link security flag
 
             localStorage.setItem('nexens_saved_logs', JSON.stringify(savedInspectionLogs));
             syncStateToCloud();
 
-            document.getElementById('custRemarksInput').value = '';
             document.getElementById('customerPortalModal').classList.add('hidden');
             document.getElementById('customerPdfPromptModal').classList.remove('hidden');
         }
 
-        function handleCustomerPdfDownloadChoice(wantsDownload) {
+        // --- REQUIREMENT: YES / NO CHOICE & AUTO-CLOSE BROWSER ---
+        function handleCustomerPdfChoice(wantsYes) {
             document.getElementById('customerPdfPromptModal').classList.add('hidden');
-            if (wantsDownload && activeCustomerLogId) {
+            if (wantsYes && activeCustomerLogId) {
                 const log = savedInspectionLogs.find(l => l.id === activeCustomerLogId);
                 if (log) {
                     const printArea = document.getElementById('printableDocumentArea');
@@ -614,7 +554,11 @@
                     window.print();
                 }
             }
-            setTimeout(() => { window.close(); }, 500);
+            // Auto close browser window after action
+            setTimeout(() => {
+                window.close();
+                window.location.href = "about:blank";
+            }, 300);
         }
 
         function setCustomerCredentials(logId) {
@@ -713,6 +657,7 @@
             showToast(`Inspection Log (${docNo}) Saved!`, 'success');
         }
 
+        // --- REQUIREMENT: UPDATED PDF TEMPLATE WITH POSITION FIELDS & COMMENTED BY ---
         function buildPrintableHTML(siteData, docNo, logRef = null) {
             const mainTitle = document.getElementById('reportMainTitleInput')?.value || 'OPERATIONAL LOG SHEET';
             let html = `
@@ -814,13 +759,7 @@
             const grid = document.getElementById('equipmentGrid');
             if (!grid || !site) return;
 
-            const eqList = currentFilter === 'all' ? site.equipment : site.equipment.filter(e => e.category === currentFilter);
-            if (eqList.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No equipment found in this category.</div>`;
-                return;
-            }
-
-            grid.innerHTML = eqList.map(eq => `
+            grid.innerHTML = site.equipment.map(eq => `
                 <div class="bg-white dark:bg-nexens-cardDark rounded-2xl border border-slate-200 dark:border-nexens-borderDark p-5 shadow-sm space-y-4">
                     <div class="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
                         <div>
@@ -853,14 +792,14 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border">
                                 <span class="font-bold text-[10px] uppercase text-nexens-navy dark:text-slate-300">Tested By</span>
-                                <input type="text" value="${eq.signOff?.testedName || ''}" onchange="updateSignOff('${eq.id}', 'testedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
-                                <input type="text" value="${eq.signOff?.testedPosition || ''}" onchange="updateSignOff('${eq.id}', 'testedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.testedName || ''}" onchange="updateSignOff('${eq.id}', 'testedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white mb-1">
+                                <input type="text" value="${eq.signOff?.testedPosition || ''}" onchange="updateSignOff('${eq.id}', 'testedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white mb-1">
                                 <input type="text" value="${eq.signOff?.testedCompany || ''}" onchange="updateSignOff('${eq.id}', 'testedCompany', this.value)" placeholder="Company" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
                             </div>
                             <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border">
                                 <span class="font-bold text-[10px] uppercase text-nexens-navy dark:text-slate-300">Witnessed By</span>
-                                <input type="text" value="${eq.signOff?.witnessedName || ''}" onchange="updateSignOff('${eq.id}', 'witnessedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
-                                <input type="text" value="${eq.signOff?.witnessedPosition || ''}" onchange="updateSignOff('${eq.id}', 'witnessedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.witnessedName || ''}" onchange="updateSignOff('${eq.id}', 'witnessedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white mb-1">
+                                <input type="text" value="${eq.signOff?.witnessedPosition || ''}" onchange="updateSignOff('${eq.id}', 'witnessedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white mb-1">
                                 <input type="text" value="${eq.signOff?.witnessedCompany || ''}" onchange="updateSignOff('${eq.id}', 'witnessedCompany', this.value)" placeholder="Company" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
                             </div>
                         </div>
@@ -914,23 +853,6 @@
             showToast(`Site "${name}" created!`, 'success');
         }
 
-        function handleAddEquipment(e) {
-            e.preventDefault();
-            const site = getActiveSite();
-            if (!site) return;
-            const name = document.getElementById('newEqCode').value.trim();
-            const category = document.getElementById('newEqCategory').value;
-            if (!name) return;
-
-            site.equipment.push({
-                id: 'eq_' + Date.now(), name, category, location: 'Plant Room',
-                signOff: { testedName: '', testedCompany: '', testedPosition: '', testedDate: '', witnessedName: '', witnessedCompany: '', witnessedPosition: '', witnessedDate: '' },
-                tasks: [{ id: 't_' + Date.now(), title: 'Operational Reading', type: 'num', val: '', status: 'ok', comment: '' }]
-            });
-            saveSitesToStorage(); renderEquipment();
-            showToast(`Equipment added!`, 'success');
-        }
-
         function showAppTab(tabName) {
             ['inspection', 'manager', 'history', 'admin'].forEach(t => {
                 const el = document.getElementById(t + 'View');
@@ -939,7 +861,7 @@
         }
 
         function exportDataBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ sites, users, savedInspectionLogs, categories: customCategories }, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ sites, users, savedInspectionLogs }, null, 2));
             const anchor = document.createElement('a');
             anchor.setAttribute("href", dataStr);
             anchor.setAttribute("download", `QAQC_Backup_${new Date().toISOString().split('T')[0]}.json`);
@@ -966,15 +888,19 @@
             if (urlDocId) {
                 activeCustomerLogId = urlDocId;
                 const log = savedInspectionLogs.find(l => l.id === urlDocId);
+                
+                // --- ONE-TIME ACCESS SECURITY ---
                 if (log && log.isSubmitted) {
                     document.getElementById('loginModal').classList.add('hidden');
                     document.getElementById('linkExpiredModal').classList.remove('hidden');
                     return;
                 }
+
                 document.getElementById('loginModalTitle').textContent = `Customer Auth - Doc ${urlDocId}`;
+                document.getElementById('loginModal').classList.remove('hidden');
             }
 
-            renderSiteOptions(); renderCategoryButtons(); renderEquipment(); renderLogsTable(); calculateMetrics();
+            renderSiteOptions(); renderEquipment(); renderLogsTable(); calculateMetrics();
             showAppTab('inspection');
         };
     </script>
