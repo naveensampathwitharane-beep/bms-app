@@ -38,10 +38,8 @@
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             body { background: white !important; color: black !important; }
-            .card-print { border: 1px solid #cbd5e1 !important; background: white !important; color: black !important; box-shadow: none !important; }
         }
         .print-only { display: none; }
-
         .brand-logo-img { max-width: 220px; height: auto; object-fit: contain; }
         .brand-logo-img-sm { max-width: 140px; height: auto; object-fit: contain; }
     </style>
@@ -54,7 +52,7 @@
         <div id="toastMessage" class="text-sm font-medium">Notification</div>
     </div>
 
-    <!-- DYNAMIC PRINTABLE CONTAINER FOR PDF/PRINT OUTPUT -->
+    <!-- PRINTABLE CONTAINER FOR PDF/PRINT -->
     <div id="printableDocumentArea" class="hidden print-only bg-white text-slate-900 p-4 space-y-4"></div>
 
     <!-- CUSTOMER POST-SUBMISSION PDF PROMPT MODAL -->
@@ -78,28 +76,6 @@
         </div>
     </div>
 
-    <!-- LIVE PDF PREVIEW & EDIT MODAL -->
-    <div id="pdfPreviewModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hidden no-print">
-        <div class="bg-white text-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-300 w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div class="flex items-center space-x-2">
-                    <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
-                        <i class="fas fa-file-pdf text-rose-500"></i> Official PDF Report Preview
-                    </h3>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="triggerPrintDocument()" class="px-4 py-1.5 bg-nexens-navy text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition">
-                        <i class="fas fa-print"></i> Print / Save as PDF
-                    </button>
-                    <button onclick="closePdfPreview()" class="px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-300 transition">
-                        <i class="fas fa-times"></i> Close
-                    </button>
-                </div>
-            </div>
-            <div id="pdfPreviewContent" class="p-2 sm:p-4 bg-white border rounded-xl space-y-4 overflow-x-auto"></div>
-        </div>
-    </div>
-
     <!-- LINK EXPIRED / ACCESS DENIED SCREEN -->
     <div id="linkExpiredModal" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 p-8 rounded-2xl border border-rose-500/30 max-w-md w-full shadow-2xl text-center space-y-4">
@@ -111,19 +87,17 @@
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
+    <!-- MAIN LOGIN MODAL -->
     <div id="loginModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white dark:bg-nexens-cardDark p-8 rounded-2xl border border-slate-200 dark:border-nexens-borderDark max-w-md w-full shadow-2xl space-y-6">
             <div class="text-center flex flex-col items-center justify-center space-y-2">
                 <img src="NE logo.png" alt="NEXENS" class="brand-logo-img my-2">
                 <h2 id="loginModalTitle" class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 pt-2">QAQC Protocol Login</h2>
             </div>
-
             <div id="loginErrorMessage" class="hidden p-3 bg-rose-500/10 border border-rose-500/40 rounded-xl text-rose-500 text-xs font-bold text-center">
-                Invalid Credentials!
+                Invalid Username or Password!
             </div>
-
-            <form id="mainLoginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="text-xs font-bold uppercase text-slate-400">Username</label>
                     <input type="text" id="loginUsername" required placeholder="Enter username" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm dark:text-white focus:outline-none focus:border-nexens-gold">
@@ -131,12 +105,6 @@
                 <div>
                     <label class="text-xs font-bold uppercase text-slate-400">Password</label>
                     <input type="password" id="loginPassword" required placeholder="Enter password" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm dark:text-white focus:outline-none focus:border-nexens-gold">
-                </div>
-                <div class="flex items-center justify-between text-xs">
-                    <label class="flex items-center space-x-2 cursor-pointer text-slate-600 dark:text-slate-300">
-                        <input type="checkbox" id="rememberMeCheckbox" class="w-4 h-4 rounded text-nexens-gold accent-nexens-navy">
-                        <span>Remember credentials</span>
-                    </label>
                 </div>
                 <button type="submit" class="w-full py-3 bg-nexens-navy hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-lg border border-nexens-gold/30 transition flex items-center justify-center gap-2">
                     <i class="fas fa-right-to-bracket"></i> Login to Workspace
@@ -191,7 +159,7 @@
 
                 <!-- Live Equipment Summary Table -->
                 <div class="space-y-2">
-                    <h4 class="text-xs font-bold uppercase text-slate-400">Inspected Items Preview</h4>
+                    <h4 class="text-xs font-bold uppercase text-slate-400">Inspected Items Summary</h4>
                     <div id="custEquipmentSummaryContainer" class="max-h-56 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-3 bg-slate-50 dark:bg-slate-900/40"></div>
                 </div>
 
@@ -218,17 +186,18 @@
                     <select id="activeSiteSelect" onchange="changeActiveSite(this.value)" class="bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-nexens-gold cursor-pointer w-full sm:w-48 max-h-48 overflow-y-auto"></select>
                 </div>
 
+                <!-- Nav Tabs -->
                 <div class="hidden md:flex items-center space-x-1.5 bg-slate-200/80 dark:bg-slate-900/90 p-1.5 rounded-xl border border-slate-300/60 dark:border-slate-700/60 shadow-inner">
-                    <button onclick="showAppTab('inspection')" id="tabNavInspection" class="nav-btn-inspection px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('inspection')" id="tabNavInspection" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-nexens-navy text-white shadow-md">
                         <i class="fas fa-clipboard-check text-emerald-500"></i> Inspection
                     </button>
-                    <button onclick="showAppTab('manager')" id="tabNavManager" class="nav-btn-manager px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('manager')" id="tabNavManager" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-folder-plus text-nexens-gold"></i> Assets & Sites
                     </button>
-                    <button onclick="showAppTab('history')" id="tabNavHistory" class="nav-btn-history px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('history')" id="tabNavHistory" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-history text-sky-500"></i> Logs
                     </button>
-                    <button onclick="showAppTab('admin')" id="tabNavAdmin" class="nav-btn-admin px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    <button onclick="showAppTab('admin')" id="tabNavAdmin" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                         <i class="fas fa-user-shield text-rose-500"></i> Admin Panel
                     </button>
                 </div>
@@ -238,14 +207,11 @@
                     <div id="currentUserBadge" class="hidden sm:flex items-center space-x-2 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs border border-slate-200 dark:border-slate-700">
                         <i class="fas fa-user-circle text-nexens-gold"></i>
                         <span id="currentUserName" class="font-bold text-slate-700 dark:text-slate-200">Admin</span>
-                        <span id="currentUserRole" class="text-[9px] bg-rose-500/20 text-rose-400 px-1.5 py-0.2 rounded font-bold uppercase">ADMIN</span>
                     </div>
-
                     <button onclick="logout()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-500 transition" title="Logout">
                         <i class="fas fa-right-from-bracket"></i>
                     </button>
-
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Toggle Theme">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="Toggle Theme">
                         <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
                 </div>
@@ -253,68 +219,59 @@
         </div>
     </header>
 
-    <!-- Main Application View -->
+    <!-- Main Content Area -->
     <main class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
 
-        <!-- TAB 1: INSPECTION ROUTINE -->
+        <!-- TAB 1: INSPECTION -->
         <section id="inspectionView" class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 no-print">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold uppercase text-slate-400">Site Health Index</span>
-                        <i class="fas fa-heart-pulse text-emerald-500"></i>
-                    </div>
+                    <span class="text-xs font-semibold uppercase text-slate-400">Site Health Index</span>
                     <h3 id="healthScoreDisplay" class="text-2xl font-extrabold mt-1 text-slate-900 dark:text-white">100%</h3>
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full mt-2">
                         <div id="healthScoreBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
                     </div>
                     <p id="healthScoreBreakdown" class="text-[10px] text-slate-400 mt-1 font-mono">Equipment OK (60%): 60% | Parameter Fill (40%): 40%</p>
                 </div>
-
                 <div class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold uppercase text-slate-400">Detected Faults</span>
-                        <i class="fas fa-triangle-exclamation text-rose-500"></i>
-                    </div>
+                    <span class="text-xs font-semibold uppercase text-slate-400">Detected Faults</span>
                     <h3 id="faultCountDisplay" class="text-2xl font-extrabold mt-1 text-rose-500">0</h3>
                     <p class="text-xs text-slate-400 mt-1">Action Required</p>
                 </div>
-
-                <div class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-2 sm:col-span-2 md:col-span-1">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase text-nexens-gold">Inspection Date</span>
-                    </div>
-                    <div class="pt-1">
-                        <input type="date" id="inspectionDateInput" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs dark:text-white">
-                    </div>
+                <div class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-2">
+                    <span class="text-xs font-bold uppercase text-nexens-gold">Inspection Date</span>
+                    <input type="date" id="inspectionDateInput" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs dark:text-white">
                 </div>
             </div>
 
-            <!-- PRIVATE NOTES -->
-            <div class="bg-amber-500/10 dark:bg-amber-500/5 p-4 rounded-2xl border border-amber-500/30 shadow-sm space-y-2 no-print">
+            <!-- Private Reference Notes -->
+            <div class="bg-amber-500/10 dark:bg-amber-500/5 p-4 rounded-2xl border border-amber-500/30 shadow-sm space-y-2">
                 <h4 class="text-xs font-bold uppercase text-amber-700 dark:text-amber-400 flex items-center gap-2">
                     <i class="fas fa-note-sticky"></i> Private Reference Notes (Internal Only)
                 </h4>
-                <textarea id="privateReferenceNoteInput" oninput="savePrivateReferenceNoteAuto()" rows="2" placeholder="Type private reference notes here for your internal use only..." class="w-full bg-white dark:bg-slate-800 border border-amber-500/30 rounded-xl p-2.5 text-xs dark:text-white focus:outline-none focus:border-amber-600"></textarea>
+                <textarea id="privateReferenceNoteInput" oninput="savePrivateReferenceNoteAuto()" rows="2" placeholder="Type internal reference notes here..." class="w-full bg-white dark:bg-slate-800 border border-amber-500/30 rounded-xl p-2.5 text-xs dark:text-white focus:outline-none"></textarea>
             </div>
 
-            <!-- Custom Title -->
-            <div id="reportTitleHeaderControlContainer" class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-3 no-print">
+            <!-- Custom Report Titles -->
+            <div class="bg-white dark:bg-nexens-cardDark p-4 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-3">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="text-[10px] font-bold uppercase text-slate-400">Report Main Title</label>
-                        <input type="text" id="reportMainTitleInput" value="OPERATIONAL LOG SHEET" onchange="saveSitesToStorage()" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold dark:text-white focus:outline-none focus:border-nexens-gold">
+                        <input type="text" id="reportMainTitleInput" value="OPERATIONAL LOG SHEET" onchange="saveSitesToStorage()" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold dark:text-white">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase text-slate-400">Sub Header / Document Code</label>
-                        <input type="text" id="reportSubHeaderInput" value="MONTHLY MAINTENANCE CHECKLIST" onchange="saveSitesToStorage()" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold dark:text-white focus:outline-none focus:border-nexens-gold">
+                        <input type="text" id="reportSubHeaderInput" value="MONTHLY MAINTENANCE CHECKLIST" onchange="saveSitesToStorage()" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold dark:text-white">
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
                 <div class="flex items-center space-x-2 overflow-x-auto pb-1 w-full sm:w-auto" id="categoryFilterContainer"></div>
-                <div class="flex items-center space-x-2 shrink-0 self-end sm:self-auto">
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button onclick="addCustomCategory()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-nexens-gold font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700">
+                        <i class="fas fa-plus-circle"></i> Add Category
+                    </button>
                     <button onclick="saveChecklistLog()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
                         <i class="fas fa-save"></i> Save Log
                     </button>
@@ -324,8 +281,8 @@
             <div id="equipmentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- TAB 2: ASSETS & SITES -->
-        <section id="managerView" class="space-y-6 hidden no-print">
+        <!-- TAB 2: ASSETS & SITES MANAGER -->
+        <section id="managerView" class="space-y-6 hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-nexens-cardDark p-6 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-4">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
@@ -340,22 +297,39 @@
                             <label class="text-xs font-bold uppercase text-slate-400">Site Name</label>
                             <input type="text" id="newSiteName" required placeholder="e.g. Sheraton Hotel" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
                         </div>
-                        <button type="submit" class="w-full py-2 bg-nexens-navy text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition">
-                            Create New Site
-                        </button>
+                        <button type="submit" class="w-full py-2 bg-nexens-navy text-white font-bold text-xs rounded-xl">Create New Site</button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 bg-white dark:bg-nexens-cardDark p-6 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-4">
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fas fa-microchip text-sky-500"></i> Add Equipment to Active Site
+                    </h3>
+                    <form onsubmit="handleAddEquipment(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-400">Equipment Name</label>
+                            <input type="text" id="newEqCode" required placeholder="e.g. AHU-01" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-400">Category</label>
+                            <select id="newEqCategory" class="mt-1 w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl">Add Equipment Card</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: LOG HISTORY -->
-        <section id="historyView" class="space-y-6 hidden no-print">
+        <!-- TAB 3: LOGS HISTORY -->
+        <section id="historyView" class="space-y-6 hidden">
             <div class="bg-white dark:bg-nexens-cardDark p-6 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 dark:border-slate-800 pb-4 gap-3">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fas fa-clock-rotate-left text-sky-500"></i> Saved Inspection Logs History
                     </h3>
-                    <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-2">
                         <input type="text" id="searchDocNoInput" oninput="renderLogsTable()" placeholder="Search Doc No..." class="bg-slate-100 dark:bg-slate-800 border rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white font-mono">
                         <span id="savedLogsCountBadge" class="text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg text-slate-500">0 Logs</span>
                     </div>
@@ -380,16 +354,22 @@
         </section>
 
         <!-- TAB 4: ADMIN PANEL -->
-        <section id="adminView" class="space-y-6 hidden no-print">
+        <section id="adminView" class="space-y-6 hidden">
             <div class="bg-white dark:bg-nexens-cardDark p-6 rounded-2xl border border-slate-200 dark:border-nexens-borderDark shadow-sm space-y-4">
-                <h3 class="font-bold text-base text-slate-900 dark:text-white">Admin Control Panel</h3>
-                <p class="text-xs text-slate-400">Manage site settings, cloud synchronization, and user authorization matrix.</p>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fas fa-database text-emerald-500"></i> Data Backup & System Management
+                </h3>
+                <div class="flex gap-3">
+                    <button onclick="exportDataBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">
+                        <i class="fas fa-download"></i> Download Backup (.json)
+                    </button>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Firebase Compat SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -419,17 +399,20 @@
             { id: '1', fullName: 'Naveen Sampath', username: 'admin', password: 'admin123', role: 'ADMIN' }
         ];
 
+        let customCategories = JSON.parse(localStorage.getItem('nexens_categories')) || [
+            { id: 'all', name: 'All Equipment' }, { id: 'chiller', name: 'Chillers' }, { id: 'ahu', name: 'AHU / FCU' }
+        ];
+
         let savedInspectionLogs = JSON.parse(localStorage.getItem('nexens_saved_logs')) || [];
         let activeSiteId = localStorage.getItem('nexens_active_site_id') || 'site-sheraton';
         let currentFilter = 'all';
         let currentUser = null;
         let activeCustomerLogId = null;
-        let currentEditingLogId = null;
 
         async function syncStateToCloud() {
             try {
                 await db.collection('bms_data').doc('app_state').set({
-                    sites: sites, savedLogs: savedInspectionLogs, activeSiteId: activeSiteId, lastUpdated: new Date().toISOString()
+                    sites: sites, savedLogs: savedInspectionLogs, categories: customCategories, activeSiteId: activeSiteId, lastUpdated: new Date().toISOString()
                 });
             } catch (e) { console.error("Sync error", e); }
         }
@@ -438,14 +421,13 @@
             db.collection('bms_data').doc('app_state').onSnapshot((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
-                    if (data.sites) { sites = data.sites; }
-                    if (data.savedLogs) { savedInspectionLogs = data.savedLogs; }
-                    renderLogsTable(); renderEquipment(); calculateMetrics();
+                    if (data.sites) sites = data.sites;
+                    if (data.savedLogs) savedInspectionLogs = data.savedLogs;
+                    if (data.categories) customCategories = data.categories;
+                    renderSiteOptions(); renderCategoryButtons(); renderEquipment(); renderLogsTable(); calculateMetrics();
                 }
             });
         }
-
-        function canUser(key) { return true; }
 
         function calculateMetrics() {
             const site = getActiveSite();
@@ -465,19 +447,49 @@
             const fillRatioPct = totalTasks > 0 ? (filledTasks / totalTasks) * 100 : 100;
             const health = Math.round((okRatioPct * 0.60) + (fillRatioPct * 0.40));
 
-            const hDisp = document.getElementById('healthScoreDisplay');
-            const hBar = document.getElementById('healthScoreBar');
-            const hBreak = document.getElementById('healthScoreBreakdown');
-            const fDisp = document.getElementById('faultCountDisplay');
-
-            if (hDisp) hDisp.textContent = health + '%';
-            if (hBar) hBar.style.width = health + '%';
-            if (hBreak) hBreak.textContent = `Equipment OK (60%): ${Math.round(okRatioPct * 0.6)}% | Parameter Fill (40%): ${Math.round(fillRatioPct * 0.4)}%`;
-            if (fDisp) fDisp.textContent = faults;
+            document.getElementById('healthScoreDisplay').textContent = health + '%';
+            document.getElementById('healthScoreBar').style.width = health + '%';
+            document.getElementById('healthScoreBreakdown').textContent = `Equipment OK (60%): ${Math.round(okRatioPct * 0.6)}% | Parameter Fill (40%): ${Math.round(fillRatioPct * 0.4)}%`;
+            document.getElementById('faultCountDisplay').textContent = faults;
         }
 
         function getActiveSite() { return sites.find(s => s.id === activeSiteId) || sites[0]; }
-        function saveSitesToStorage() { localStorage.setItem('nexens_sites', JSON.stringify(sites)); calculateMetrics(); syncStateToCloud(); }
+        function saveSitesToStorage() {
+            localStorage.setItem('nexens_sites', JSON.stringify(sites));
+            localStorage.setItem('nexens_active_site_id', activeSiteId);
+            calculateMetrics(); syncStateToCloud();
+        }
+
+        function renderSiteOptions() {
+            const sel = document.getElementById('activeSiteSelect');
+            if (!sel) return;
+            sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id === activeSiteId ? 'selected' : ''}>${s.name} (${s.projectNo || '01'})</option>`).join('');
+        }
+
+        function changeActiveSite(id) { activeSiteId = id; saveSitesToStorage(); renderEquipment(); }
+
+        function renderCategoryButtons() {
+            const c = document.getElementById('categoryFilterContainer');
+            if (!c) return;
+            c.innerHTML = customCategories.map(cat => `
+                <button onclick="filterCategory('${cat.id}')" class="px-3 py-1 rounded-lg text-xs font-bold ${currentFilter === cat.id ? 'bg-nexens-navy text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}">
+                    ${cat.name}
+                </button>
+            `).join('');
+            const sel = document.getElementById('newEqCategory');
+            if (sel) sel.innerHTML = customCategories.filter(x => x.id !== 'all').map(x => `<option value="${x.id}">${x.name}</option>`).join('');
+        }
+
+        function filterCategory(id) { currentFilter = id; renderCategoryButtons(); renderEquipment(); }
+
+        function addCustomCategory() {
+            const name = prompt("Enter new category name:");
+            if (!name || !name.trim()) return;
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+            customCategories.push({ id, name: name.trim() });
+            localStorage.setItem('nexens_categories', JSON.stringify(customCategories));
+            renderCategoryButtons(); syncStateToCloud();
+        }
 
         function handleLogin(e) {
             e.preventDefault();
@@ -518,8 +530,8 @@
             const name = document.getElementById('custNameInput').value.trim();
             const pos = document.getElementById('custPositionInput').value.trim();
             const comp = document.getElementById('custCompanyInput').value.trim();
-
             const isValid = name !== '' && pos !== '' && comp !== '';
+
             const remarksInput = document.getElementById('custRemarksInput');
             const submitBtn = document.getElementById('custSubmitBtn');
             const notice = document.getElementById('custLockNotice');
@@ -551,7 +563,6 @@
             document.getElementById('custPositionInput').value = log.customerPosition || '';
             document.getElementById('custCompanyInput').value = log.customerCompany || '';
             document.getElementById('custRemarksInput').value = log.customerRemarks || '';
-
             validateCustomerInputForm();
 
             const summary = document.getElementById('custEquipmentSummaryContainer');
@@ -575,7 +586,6 @@
         function handleCustomerSubmitFeedback(e) {
             e.preventDefault();
             if (!activeCustomerLogId) return;
-
             const log = savedInspectionLogs.find(l => l.id === activeCustomerLogId);
             if (!log) return;
 
@@ -610,7 +620,6 @@
         function setCustomerCredentials(logId) {
             const log = savedInspectionLogs.find(l => l.id === logId);
             if (!log) return;
-
             const u = prompt("Set Customer Login Username:", log.custUsername || `cust_${log.id.slice(-4)}`);
             if (!u || !u.trim()) return;
             const p = prompt("Set Customer Login Password:", log.custPassword || '123456');
@@ -619,28 +628,34 @@
             log.custUsername = u.trim();
             log.custPassword = p.trim();
             localStorage.setItem('nexens_saved_logs', JSON.stringify(savedInspectionLogs));
-            syncStateToCloud();
-            renderLogsTable();
+            syncStateToCloud(); renderLogsTable();
             showToast('Customer Credentials Updated!', 'success');
         }
 
         function copyCustomerShareLink(logId) {
             const log = savedInspectionLogs.find(l => l.id === logId);
             if (!log) return;
-            if (!log.custUsername || !log.custPassword) {
-                setCustomerCredentials(logId);
-            }
+            if (!log.custUsername || !log.custPassword) setCustomerCredentials(logId);
             const baseUrl = window.location.href.split('?')[0];
-            const fullLink = `${baseUrl}?docId=${log.id}`;
-            navigator.clipboard.writeText(fullLink);
+            navigator.clipboard.writeText(`${baseUrl}?docId=${log.id}`);
             showToast(`Share link copied! User: ${log.custUsername}`, 'info');
         }
 
         function renderLogsTable() {
             const table = document.getElementById('historyLogsTable');
+            const countBadge = document.getElementById('savedLogsCountBadge');
+            const query = document.getElementById('searchDocNoInput')?.value.toLowerCase().trim() || '';
             if (!table) return;
 
-            table.innerHTML = savedInspectionLogs.map(log => `
+            const filtered = savedInspectionLogs.filter(l => l.id.toLowerCase().includes(query) || l.siteName.toLowerCase().includes(query));
+            if (countBadge) countBadge.textContent = `${filtered.length} Logs`;
+
+            if (filtered.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No inspection logs found.</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = filtered.map(log => `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                     <td class="p-3 font-bold text-nexens-gold">${log.id} ${log.isSubmitted ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">Submitted</span>' : ''}</td>
                     <td class="p-3 text-slate-600 dark:text-slate-300">${log.timestamp}</td>
@@ -652,10 +667,10 @@
                         </div>
                     </td>
                     <td class="p-3 text-right space-x-1.5 whitespace-nowrap">
-                        <button onclick="setCustomerCredentials('${log.id}')" class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded-lg text-[11px] font-sans font-bold hover:bg-amber-500 hover:text-white transition">
+                        <button onclick="setCustomerCredentials('${log.id}')" class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded-lg text-[11px] font-sans font-bold">
                             <i class="fas fa-key"></i> Credentials
                         </button>
-                        <button onclick="copyCustomerShareLink('${log.id}')" class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-lg text-[11px] font-sans font-bold hover:bg-emerald-500 hover:text-white transition">
+                        <button onclick="copyCustomerShareLink('${log.id}')" class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-lg text-[11px] font-sans font-bold">
                             <i class="fas fa-share-nodes"></i> Share Link
                         </button>
                         <button onclick="printSavedLogSnapshot('${log.id}')" class="px-2 py-1 bg-slate-800 text-white rounded-lg text-[11px] font-sans font-bold">
@@ -674,18 +689,10 @@
             window.print();
         }
 
-        function triggerPrintDocument() {
-            const site = getActiveSite();
-            const docNo = generateDocumentNumber(site);
-            const printArea = document.getElementById('printableDocumentArea');
-            printArea.innerHTML = buildPrintableHTML(site, docNo);
-            window.print();
-        }
-
         function generateDocumentNumber(site) {
             const year = new Date().getFullYear().toString().slice(-2);
             const projNo = site.projectNo || '01';
-            const count = savedInspectionLogs.length + 1;
+            const count = savedInspectionLogs.filter(l => l.siteId === site.id).length + 1;
             return `NSCL-${year}-${projNo}-${String(count).padStart(5, '0')}`;
         }
 
@@ -707,6 +714,7 @@
         }
 
         function buildPrintableHTML(siteData, docNo, logRef = null) {
+            const mainTitle = document.getElementById('reportMainTitleInput')?.value || 'OPERATIONAL LOG SHEET';
             let html = `
                 <div style="width: 100%; text-align: center; margin-bottom: 8px; font-weight: 800; font-size: 13px; color: #0F172A; font-family: monospace; text-transform: uppercase;">
                     DOC NO: ${docNo}
@@ -722,6 +730,7 @@
                             <div style="background-color: #0F172A; color: white; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; border-radius: 4px; display: inline-block;">
                                 SITE: ${siteData.name}
                             </div>
+                            <div style="font-size: 11px; font-weight: 800; color: #0F172A; margin-top: 6px;">${mainTitle}</div>
                         </td>
                     </tr>
                 </table>
@@ -741,6 +750,7 @@
                                     <th style="padding: 4px; color: #475569;">TASK PARAMETER</th>
                                     <th style="padding: 4px; color: #475569;">VALUE</th>
                                     <th style="padding: 4px; color: #475569;">STATUS</th>
+                                    <th style="padding: 4px; color: #475569;">REMARKS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -749,6 +759,7 @@
                                         <td style="padding: 4px; font-weight: 600;">${t.title}</td>
                                         <td style="padding: 4px; font-family: monospace;">${t.val || '-'}</td>
                                         <td style="padding: 4px; font-weight: 700; color: ${t.status === 'ok' ? '#16a34a' : '#dc2626'};">${t.status ? t.status.toUpperCase() : 'OK'}</td>
+                                        <td style="padding: 4px; color: #64748B;">${t.comment || '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -761,14 +772,12 @@
                                     <div style="margin-top: 2px;">Name: <strong>${sign.testedName || '____________________'}</strong></div>
                                     <div style="margin-top: 2px;">Position: <strong>${sign.testedPosition || '____________________'}</strong></div>
                                     <div style="margin-top: 2px;">Company: <strong>${sign.testedCompany || '____________________'}</strong></div>
-                                    <div style="margin-top: 2px;">Date: <strong>${sign.testedDate || '____________________'}</strong></div>
                                 </td>
                                 <td style="width: 50%; padding: 6px; vertical-align: top;">
                                     <div style="font-weight: 800; color: #0F172A; text-transform: uppercase;">👤 WITNESSED BY</div>
                                     <div style="margin-top: 2px;">Name: <strong>${sign.witnessedName || '____________________'}</strong></div>
                                     <div style="margin-top: 2px;">Position: <strong>${sign.witnessedPosition || '____________________'}</strong></div>
                                     <div style="margin-top: 2px;">Company: <strong>${sign.witnessedCompany || '____________________'}</strong></div>
-                                    <div style="margin-top: 2px;">Date: <strong>${sign.witnessedDate || '____________________'}</strong></div>
                                 </td>
                             </tr>
                         </table>
@@ -779,13 +788,13 @@
             if (logRef && (logRef.customerRemarks || logRef.customerName)) {
                 html += `
                     <div style="border: 2px solid #C5A059; border-radius: 8px; padding: 12px; margin-top: 15px; background-color: #FFFDF5; font-family: 'Inter', sans-serif;">
-                        <div style="font-weight: 800; font-size: 11px; text-transform: uppercase; color: #1B2A4A; border-bottom: 1px solid #C5A059; pb-2; margin-bottom: 8px;">
+                        <div style="font-weight: 800; font-size: 11px; text-transform: uppercase; color: #1B2A4A; border-bottom: 1px solid #C5A059; padding-bottom: 4px; margin-bottom: 8px;">
                             📝 OFFICIAL CUSTOMER REMARKS
                         </div>
                         <div style="font-size: 9px; color: #334155; margin-bottom: 10px; font-style: italic;">
                             "${logRef.customerRemarks || 'No remarks provided.'}"
                         </div>
-                        <table style="width: 100%; border-collapse: collapse; font-size: 8px; border-top: 1px dashed #C5A059; pt-2;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8px; border-top: 1px dashed #C5A059; padding-top: 4px;">
                             <tr>
                                 <td>COMMENTED BY: <strong>${logRef.customerName || '-'}</strong></td>
                                 <td>POSITION: <strong>${logRef.customerPosition || '-'}</strong></td>
@@ -805,22 +814,56 @@
             const grid = document.getElementById('equipmentGrid');
             if (!grid || !site) return;
 
-            grid.innerHTML = site.equipment.map(eq => `
+            const eqList = currentFilter === 'all' ? site.equipment : site.equipment.filter(e => e.category === currentFilter);
+            if (eqList.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No equipment found in this category.</div>`;
+                return;
+            }
+
+            grid.innerHTML = eqList.map(eq => `
                 <div class="bg-white dark:bg-nexens-cardDark rounded-2xl border border-slate-200 dark:border-nexens-borderDark p-5 shadow-sm space-y-4">
-                    <h3 class="font-extrabold text-sm text-slate-900 dark:text-white">${eq.name}</h3>
+                    <div class="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div>
+                            <h3 class="font-extrabold text-sm text-slate-900 dark:text-white">${eq.name}</h3>
+                            <p class="text-xs text-slate-400"><i class="fas fa-location-dot text-nexens-gold text-[10px]"></i> ${eq.location}</p>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-500">${eq.category}</span>
+                    </div>
+
                     <div class="space-y-3">
                         ${eq.tasks.map(t => `
                             <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-2">
                                 <div class="flex justify-between items-center text-xs font-semibold">
                                     <span class="text-slate-700 dark:text-slate-200">${t.title}</span>
                                     <div class="flex items-center space-x-1">
-                                        <button onclick="updateTaskStatus('${eq.id}', '${t.id}', 'ok')" class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'ok' ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700'}">OK</button>
-                                        <button onclick="updateTaskStatus('${eq.id}', '${t.id}', 'fault')" class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'fault' ? 'bg-rose-500 text-white' : 'bg-slate-200 dark:bg-slate-700'}">Fault</button>
+                                        <button onclick="updateTaskStatus('${eq.id}', '${t.id}', 'ok')" class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'ok' ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">OK</button>
+                                        <button onclick="updateTaskStatus('${eq.id}', '${t.id}', 'fault')" class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'fault' ? 'bg-rose-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">Fault</button>
                                     </div>
                                 </div>
-                                <input type="text" value="${t.val || ''}" onchange="updateTaskVal('${eq.id}', '${t.id}', this.value)" placeholder="Reading / Value" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs dark:text-white">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                    <input type="text" value="${t.val || ''}" onchange="updateTaskVal('${eq.id}', '${t.id}', this.value)" placeholder="Reading / Value" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs dark:text-white">
+                                    <input type="text" value="${t.comment || ''}" onchange="updateTaskComment('${eq.id}', '${t.id}', this.value)" placeholder="Remarks" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs dark:text-white">
+                                </div>
                             </div>
                         `).join('')}
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                        <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider"><i class="fas fa-signature text-nexens-gold"></i> Verification / Sign-Off</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border">
+                                <span class="font-bold text-[10px] uppercase text-nexens-navy dark:text-slate-300">Tested By</span>
+                                <input type="text" value="${eq.signOff?.testedName || ''}" onchange="updateSignOff('${eq.id}', 'testedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.testedPosition || ''}" onchange="updateSignOff('${eq.id}', 'testedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.testedCompany || ''}" onchange="updateSignOff('${eq.id}', 'testedCompany', this.value)" placeholder="Company" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                            </div>
+                            <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border">
+                                <span class="font-bold text-[10px] uppercase text-nexens-navy dark:text-slate-300">Witnessed By</span>
+                                <input type="text" value="${eq.signOff?.witnessedName || ''}" onchange="updateSignOff('${eq.id}', 'witnessedName', this.value)" placeholder="Name" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.witnessedPosition || ''}" onchange="updateSignOff('${eq.id}', 'witnessedPosition', this.value)" placeholder="Position" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                                <input type="text" value="${eq.signOff?.witnessedCompany || ''}" onchange="updateSignOff('${eq.id}', 'witnessedCompany', this.value)" placeholder="Company" class="w-full bg-white dark:bg-slate-800 border rounded px-2 py-1 text-xs dark:text-white">
+                            </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -842,12 +885,69 @@
             if (t) { t.val = val; saveSitesToStorage(); }
         }
 
+        function updateTaskComment(eqId, taskId, comment) {
+            const site = getActiveSite();
+            const eq = site.equipment.find(e => e.id === eqId);
+            if (!eq) return;
+            const t = eq.tasks.find(x => x.id === taskId);
+            if (t) { t.comment = comment; saveSitesToStorage(); }
+        }
+
+        function updateSignOff(eqId, field, val) {
+            const site = getActiveSite();
+            const eq = site.equipment.find(e => e.id === eqId);
+            if (!eq) return;
+            if (!eq.signOff) eq.signOff = {};
+            eq.signOff[field] = val;
+            saveSitesToStorage();
+        }
+
+        function handleAddSite(e) {
+            e.preventDefault();
+            const projectNo = document.getElementById('newSiteProjectNo').value.trim();
+            const name = document.getElementById('newSiteName').value.trim();
+            if (!name || !projectNo) return;
+
+            const newSite = { id: 'site_' + Date.now(), projectNo, name, location: 'Colombo', equipment: [] };
+            sites.push(newSite); activeSiteId = newSite.id;
+            saveSitesToStorage(); renderSiteOptions(); renderEquipment();
+            showToast(`Site "${name}" created!`, 'success');
+        }
+
+        function handleAddEquipment(e) {
+            e.preventDefault();
+            const site = getActiveSite();
+            if (!site) return;
+            const name = document.getElementById('newEqCode').value.trim();
+            const category = document.getElementById('newEqCategory').value;
+            if (!name) return;
+
+            site.equipment.push({
+                id: 'eq_' + Date.now(), name, category, location: 'Plant Room',
+                signOff: { testedName: '', testedCompany: '', testedPosition: '', testedDate: '', witnessedName: '', witnessedCompany: '', witnessedPosition: '', witnessedDate: '' },
+                tasks: [{ id: 't_' + Date.now(), title: 'Operational Reading', type: 'num', val: '', status: 'ok', comment: '' }]
+            });
+            saveSitesToStorage(); renderEquipment();
+            showToast(`Equipment added!`, 'success');
+        }
+
         function showAppTab(tabName) {
             ['inspection', 'manager', 'history', 'admin'].forEach(t => {
                 const el = document.getElementById(t + 'View');
                 if (el) el.classList.toggle('hidden', t !== tabName);
             });
         }
+
+        function exportDataBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ sites, users, savedInspectionLogs, categories: customCategories }, null, 2));
+            const anchor = document.createElement('a');
+            anchor.setAttribute("href", dataStr);
+            anchor.setAttribute("download", `QAQC_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(anchor); anchor.click(); anchor.remove();
+            showToast('Backup downloaded!', 'success');
+        }
+
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
@@ -856,28 +956,25 @@
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
-
         window.onload = function() {
+            document.getElementById('inspectionDateInput').value = new Date().toISOString().split('T')[0];
             subscribeToCloudSync();
+
             const urlParams = new URLSearchParams(window.location.search);
             const urlDocId = urlParams.get('docId');
 
             if (urlDocId) {
                 activeCustomerLogId = urlDocId;
                 const log = savedInspectionLogs.find(l => l.id === urlDocId);
-                
                 if (log && log.isSubmitted) {
                     document.getElementById('loginModal').classList.add('hidden');
                     document.getElementById('linkExpiredModal').classList.remove('hidden');
                     return;
                 }
-
                 document.getElementById('loginModalTitle').textContent = `Customer Auth - Doc ${urlDocId}`;
-                document.getElementById('loginModal').classList.remove('hidden');
-            } else {
-                document.getElementById('loginModal').classList.remove('hidden');
             }
+
+            renderSiteOptions(); renderCategoryButtons(); renderEquipment(); renderLogsTable(); calculateMetrics();
             showAppTab('inspection');
         };
     </script>
